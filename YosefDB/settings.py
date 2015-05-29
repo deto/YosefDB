@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'YosefDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME':'MySQL57',
+        'NAME':'yosefdb_schema',
         'USER':'yosefDB_user',
         'PASSWORD':'nucleosome',
         'HOST':'localhost',
