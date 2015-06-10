@@ -9,20 +9,13 @@ from .models import Sample;
 from .forms import UploadFileForm;
 # Create your views here.
 
-def index(request):
-    sample = Sample.objects.first();
-    context = {'sample': sample};
-    return render(request, 'SampleLibrary/index.html', context);
-
-
 def uploadSample(request):
     c = {};
     c.update(csrf(request));
     if(request.method == 'POST'):
-        import pdb; pdb.set_trace();
         form = UploadFileForm(request.POST, request.FILES);
         if(form.is_valid()):
-            handle_uploaded_file(request.FILES['file'])
+            handle_uploaded_file(form.cleaned_data["uploadedBy"], request.FILES['file'])
     else:
         form = UploadFileForm();
 
