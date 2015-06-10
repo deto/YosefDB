@@ -11,15 +11,11 @@
 </head>
 <body>
 <h1>Upload a New Sample Spreadsheet</h1>
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-{% if not filename %}
-    <form action="" method="post">
-        {% csrf_token %}
-        <input type="file" name="filename" class="file"/>
-        <input type="submit" value="Upload" class="btn btn-default"/>
-    </form>
-{% else %}
-    {{ filename }} uploaded successfully!
-{% endif %}
+<form action="uploadSample.html" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ file_form }}
+    <br>
+    <input type="submit" value="Submit File">
+</form>
 </body>
 </html>
