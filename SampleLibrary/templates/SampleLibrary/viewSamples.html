@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Web interface for Yosef-Group Sample Library</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'SampleLibrary/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'SampleLibrary/style.css' %}">
+    <script src="{% static 'SampleLibrary/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'SampleLibrary/bootstrap.min.js' %}"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+</head>
+<body>
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div id="filtering_options">
+
+    </div>
+    <table id="sample_table" class="display">
+        <thead>
+        <tr>
+            <th>Sample Id</th>
+            <th>Upload Batch</th>
+            <th>Organism</th>
+            <th>Tissue</th>
+            <th>Experiment Name</th>
+            <th>Data Type</th>
+            <th>Genome Version</th>
+            <th>Experiment Description</th>
+            <th>Single-Cell?</th>
+            <th>Published Data?</th>
+            <th>Date</th>
+            <th>Batch</th>
+            <th>Sequencing Tech</th>
+            <th>Raw File Location</th>
+            <th>Specific Raw File Location</th>
+            <th>Local Backup Location</th>
+            <th>Remote Backup Location</th>
+            <th>Processed File Location</th>
+            <th>Condition Code</th>
+            <th>Time Code</th>
+            <th>Batch Code</th>
+            <th>Id Code</th>
+            <th>Control Id</th>
+            <th>Preprocess Date</th>
+            <th>Comments</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</form>
+<script type="text/javascript" language="javascript" class="init">
+     $(document).ready(function() {
+         var table = $('#sample_table').DataTable( {
+             "processing": true,
+             "serverSide": true,
+             "ajax": {
+                 "processing": true,
+                 "url": "{% url 'DT_Ajax' %}",
+                 "type": "POST",
+                 "dataSrc": "data"
+             },
+
+             "columns": [
+                 { "data": "pk" , "name": "pk", "visible": false},
+                 { "data": "fields.UploadBatch", "name": "UploadBatch" , "visible": false},
+                 { "data": "fields.Organism", "name": "Organism" },
+                 { "data": "fields.Tissue", "name": "Tissue" },
+                 { "data": "fields.ExperimentName", "name": "ExperimentName" },
+                 { "data": "fields.DataType", "name": "DataType" },
+                 { "data": "fields.GenomeVersion", "name": "GenomeVersion" },
+                 { "data": "fields.ExperimentDescription", "name": "ExperimentDescription" },
+                 { "data": "fields.isSingleCell", "name": "isSingleCell", "visible": false},
+                 { "data": "fields.isPublishedData", "name": "isPublishedData", "visible": false},
+                 { "data": "fields.Date", "name": "Date", "visible": false },
+                 { "data": "fields.Batch", "name": "Batch", "visible": false },
+                 { "data": "fields.SequencingTech", "name": "SequencingTech", "visible": false },
+                 { "data": "fields.RawFileLoc", "name": "RawFileLoc", "visible": false },
+                 { "data": "fields.SpecificRawFileLoc", "name": "SpecificRawFileLoc", "visible": false },
+                 { "data": "fields.LocalBackupLoc", "name": "LocalBackupLoc", "visible": false },
+                 { "data": "fields.RemoteBackupLoc", "name": "RemoteBackupLoc", "visible": false },
+                 { "data": "fields.ProcessedFileLoc", "name": "ProcessedFileLoc", "visible": false },
+                 { "data": "fields.ConditionCode", "name": "ConditionCode", "visible": false },
+                 { "data": "fields.TimeCode", "name": "TimeCode", "visible": false },
+                 { "data": "fields.BatchCode", "name": "BatchCode", "visible": false },
+                 { "data": "fields.IdCode", "name": "IdCode", "visible": false },
+                 { "data": "fields.ControlId", "name": "ControlId", "visible": false },
+                 { "data": "fields.PreprocessDate", "name": "PreprocessDate", "visible": false },
+                 { "data": "fields.Comments", "name": "Comments", "visible": false },
+                 ],
+         } );
+
+        // for each column in header add a togglevis button in the div
+        table.columns().every( function () {
+            var i = this.index();
+            var name = this.header().innerHTML;
+            var checkbox = document.createElement( "input" );
+            checkbox.type="checkbox";
+            checkbox.name=name;
+            checkbox.value=i;
+            checkbox.id="filterbox"+ i.toString();
+            var label = document.createElement("label");
+            label.htmlFor = checkbox.id;
+            label.appendChild(document.createTextNode(name));
+
+            //Initial checked status
+            $(checkbox).prop("checked", this.visible());
+
+            $(checkbox).on( 'change', function (e) {
+                e.preventDefault();
+                // Get the column API object
+                var column = table.column($(this).val());
+                 // Toggle the visibility
+                column.visible($(this).prop("checked"));
+            });
+            $("#filtering_options").append($(label));
+            $("#filtering_options").append($(checkbox));
+        });
+
+     } );
+ </script>
+</body>
+</html>
