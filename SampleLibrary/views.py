@@ -1,9 +1,11 @@
-from django.shortcuts import render, render_to_response;
+from django.shortcuts import render, render_to_response, redirect;
 from django.template.context_processors import csrf;
 from django.http import HttpResponse;
 from django.template import RequestContext, loader;
 from django.core import serializers;
 from django.views.decorators.csrf import csrf_exempt;
+from django.contrib.auth import authenticate, login, logout;
+from django.contrib.auth.decorators import login_required;
 
 from .fileOps import handle_uploaded_file;
 
@@ -11,6 +13,7 @@ from .models import Sample;
 from .forms import UploadFileForm;
 # Create your views here.
 
+@login_required
 def uploadSample(request):
     c = {};
     c.update(csrf(request));
@@ -26,12 +29,14 @@ def uploadSample(request):
     return render_to_response('SampleLibrary/uploadSample.html',c );
 
 
+@login_required
 def viewSample(request):
     c = {}
     c.update(csrf(request));
     return render_to_response('SampleLibrary/viewSamples.html',c);
 
 @csrf_exempt
+@login_required
 def samples_asJson(request):
     #import pdb; pdb.set_trace();
     params = request.POST;
@@ -49,9 +54,29 @@ def samples_asJson(request):
         "recordsFiltered": len(samples),
     });
 
-
     json_list = ['"'+key+'": ' + str(val) for key,val in other_DT_vals.items()];
     json_list.append(json_samples);
     json = "{" + ','.join(json_list) + "}";
 
     return HttpResponse(json, content_type='application/json');
+
+def logout_view(request):
+    logout(request);
+    return redirect("PublicView");
+
+def publicView(request):
+    c = {};
+    c.update(csrf(request));
+    c["loginFail"] = False;
+    if(request.method == "POST"):
+        username = request.POST['username'];
+        password = request.POST['password'];
+        user = authenticate(username=username, password=password);
+        if user is not None:
+            if user.is_active:
+                login(request, user);
+                return redirect("viewSample");
+        else:
+           c["loginFail"] = True;
+
+    return render_to_response("SampleLibrary/public.html", c);

@@ -1,3 +1,10 @@
+html{
+    height: 100%;
+}
+
+body{
+    min-height: 100%;
+}
 #filtering_options label {
     margin-left: 20px;
 }
@@ -21,4 +28,61 @@
     height: 100%;
     background: rgba(0, 0, 0, .5);
     z-index: 20;
+}
+
+#menu_bar
+{
+    line-height: 40px;
+    background-color: lightblue;
+    margin-bottom: 10px;
+}
+
+#menu_bar a
+{
+    padding: 0px 20px;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #303030;
+}
+
+#menu_bar a:hover
+{
+    text-decoration: none;
+    color: #303030;
+}
+
+#publicWrapper
+{
+    position: absolute;
+    width: 600px;
+    text-align: center;
+    top: 30%;
+    left: 50%;
+    margin-left: -300px;
+}
+
+#publicWrapper #title
+{
+    font-size: 3em;
+}
+
+#publicWrapper #subtitle
+{
+    font-size: 1.5em;
+}
+
+#publicWrapper input
+{
+    margin-right: 10px;
+}
+
+#publicWrapper form
+{
+    margin-top: 20px;
+}
+
+.alert-inline{
+    display: inline-block;
+    padding: 8px;
 }
