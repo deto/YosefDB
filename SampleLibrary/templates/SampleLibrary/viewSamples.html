@@ -18,8 +18,17 @@
 <body>
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div id="filtering_options">
-
+    <div id="filtering_show">
+        <button type="button" class="btn btn-default btn-lg" aria-label="Filter on">
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>Filter Columns
+        </button>
+    </div>
+    <div id="filtering_overlay" style="display: none">
+        <div id="filtering_options">
+            <button type="button" class="btn btn-primary btn-lg" aria-label="Close Filter" style="margin-top: 15px;">
+                Back
+            </button>
+        </div>
     </div>
     <table id="sample_table" class="display">
         <thead>
@@ -118,10 +127,20 @@
                  // Toggle the visibility
                 column.visible($(this).prop("checked"));
             });
-            $("#filtering_options").append($(label));
-            $("#filtering_options").append($(checkbox));
+            var div = document.createElement("div");
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            $("#filtering_options").prepend($(div));
+
         });
 
+         $('#filtering_show').children('button').click(function () {
+             $('#filtering_overlay').toggle();
+         });
+
+         $('#filtering_options').children('button').click(function () {
+             $('#filtering_overlay').toggle();
+         });
      } );
  </script>
 </body>

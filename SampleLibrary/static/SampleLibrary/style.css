@@ -1,0 +1,24 @@
+#filtering_options label {
+    margin-left: 20px;
+}
+
+#filtering_options {
+    background: white;
+    border: solid 1px black;
+    border-radius: 5px;
+    left: 50%;
+    margin: auto;
+    margin-top: 50px;
+    width: 400px;
+    padding: 20px 30px;
+}
+
+#filtering_overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    z-index: 20;
+}
