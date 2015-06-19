@@ -1,0 +1,21 @@
+{% extends "SampleLibrary/base.html" %}
+{% block basecontent %}
+    <div id="publicWrapper">
+        <div id="title">Yosef Lab</div>
+        <div id="subtitle">Sample Database</div>
+        <form action="" method="post" class="form-inline">
+            {% csrf_token %}
+            <input type="text" placeholder="User Name" name="username" class="form-control">
+            <input type="password" placeholder="Password" name="password" class="form-control">
+            <button type="submit" class="btn btn-primary">Log In</button>
+        </form>
+        {% if loginFail %}
+            <div class="alert alert-danger alert-inline" role="alert" style="margin-top: 15px;">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                Invalid User Name and/or Password
+            </div>
+        {% endif %}
+        <div id="homeImages"></div>
+    </div>
+{% endblock %}

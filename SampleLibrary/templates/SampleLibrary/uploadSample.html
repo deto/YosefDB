@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Web interface for Yosef-Group Sample Library</title>
-    {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'SampleLibrary/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'SampleLibrary/style.css' %}">
-    <script src="{% static 'SampleLibrary/jquery-2.1.4.min.js' %}" async></script>
-    <script src="{% static 'SampleLibrary/bootstrap.min.js' %}" async></script>
-</head>
-<body>
+{% extends "SampleLibrary/userBase.html" %}
+{% block content %}
 <h1>Upload a New Sample Spreadsheet</h1>
 
 <form action="" method="post" enctype="multipart/form-data">
@@ -18,5 +8,4 @@
     <br>
     <input type="submit" value="Submit File">
 </form>
-</body>
-</html>
+{% endblock %}

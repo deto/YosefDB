@@ -1,26 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Web interface for Yosef-Group Sample Library</title>
-    {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'SampleLibrary/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'SampleLibrary/style.css' %}">
-    <script src="{% static 'SampleLibrary/jquery-2.1.4.min.js' %}"></script>
-    <script src="{% static 'SampleLibrary/bootstrap.min.js' %}"></script>
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
-
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
-</head>
-<body>
+{% extends "SampleLibrary/userBase.html" %}
+{% block content %}
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div id="filtering_show">
         <button type="button" class="btn btn-default btn-lg" aria-label="Filter on">
-            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>Filter Columns
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span style="margin-left: 10px;">Filter Columns</span>
         </button>
     </div>
     <div id="filtering_overlay" style="display: none">
@@ -74,6 +58,7 @@
                  "type": "POST",
                  "dataSrc": "data"
              },
+             "iDisplayLength": 25,
 
              "columns": [
                  { "data": "pk" , "name": "pk", "visible": false},
@@ -141,7 +126,14 @@
          $('#filtering_options').children('button').click(function () {
              $('#filtering_overlay').toggle();
          });
+
+         $('#filtering_overlay').click(function(){
+             $('#filtering_options').children('button').click();
+         });
+
+         $('#filtering_options').click(function(event){
+             event.stopPropagation(); //Needed to prevent bubbling loop
+         });
      } );
  </script>
-</body>
-</html>
+{% endblock %}
