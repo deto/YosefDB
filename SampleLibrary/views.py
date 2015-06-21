@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required;
 
 from .fileOps import handle_uploaded_file;
 
-from .models import Sample;
+from .models import Sample, Upload;
 from .forms import UploadFileForm;
 # Create your views here.
 
@@ -35,6 +35,29 @@ def viewSample(request):
     c.update(csrf(request));
     return render_to_response('SampleLibrary/viewSamples.html',c);
 
+@login_required
+def viewUpload(request):
+    c = {}
+    c.update(csrf(request));
+    uuid = request.GET["id"];
+    c.update({"uuid": uuid});
+    return render_to_response('SampleLibrary/viewSingleUpload.html',c);
+
+@login_required
+def manageUploads(request):
+    c = {}
+    c.update(csrf(request));
+    return render_to_response('SampleLibrary/manageUploads.html',c);
+
+@csrf_exempt
+@login_required
+def singleUpload_Samples_asJson(request):
+    uuid = request.GET["id"];
+    samples = Sample.objects.filter(UploadBatch = uuid);
+    json_samples = '"data": ' + serializers.serialize('json',samples);
+    json = "{" + json_samples + "}";
+    return HttpResponse(json, content_type='application/json');
+
 @csrf_exempt
 @login_required
 def samples_asJson(request):
@@ -56,6 +79,31 @@ def samples_asJson(request):
 
     json_list = ['"'+key+'": ' + str(val) for key,val in other_DT_vals.items()];
     json_list.append(json_samples);
+    json = "{" + ','.join(json_list) + "}";
+
+    return HttpResponse(json, content_type='application/json');
+
+@csrf_exempt
+@login_required
+def uploads_asJson(request):
+    #import pdb; pdb.set_trace();
+    params = request.POST;
+
+    #Filter by number and offset.
+    start = int(params["start"]);
+    length = int(params["length"]);
+    uploads = Upload.objects.all();
+    paged_uploads = uploads[start:(start+length)];
+    json_uploads = '"data": ' + serializers.serialize('json',paged_uploads);
+
+    other_DT_vals = dict({
+        "draw": int(params["draw"]),
+        "recordsTotal": Upload.objects.count(),
+        "recordsFiltered": len(uploads),
+    });
+
+    json_list = ['"'+key+'": ' + str(val) for key,val in other_DT_vals.items()];
+    json_list.append(json_uploads);
     json = "{" + ','.join(json_list) + "}";
 
     return HttpResponse(json, content_type='application/json');

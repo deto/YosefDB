@@ -1,0 +1,59 @@
+{% extends "SampleLibrary/userBase.html" %}
+{% block content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1>Manage Uploads</h1>
+        <div style="margin-top: 100px" class="uploadContainer">
+            <table id="uploads_table" class="display">
+                <thead>
+                <tr>
+                    <th>Uploaded By</th>
+                    <th>Upload Date</th>
+                    <th>Upload Id</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </form>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function() {
+            var table = $('#uploads_table').DataTable( {
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "processing": true,
+                    "url": "{% url 'Uploads_Ajax' %}",
+                    "type": "POST",
+                    "dataSrc": "data"
+                },
+                "iDisplayLength": 25,
+
+                "columns": [
+                    { "data": "fields.UploadedBy", "name": "UploadedBy"},
+                    { "data": "fields.UploadDate", "name": "UploadDate" },
+                    { "data": "pk" , "name": "pk"},
+                    { "className": 'info-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+                    { "className": 'delete-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    }
+                ],
+            } );
+
+            $('#uploads_table tbody').on('click', 'td.info-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row( tr );
+                var uploadUUID = row.data().pk;
+                window.location = "{% url 'viewUpload' %}" + '?id=' + uploadUUID;
+            });
+        } );
+    </script>
+{% endblock %}

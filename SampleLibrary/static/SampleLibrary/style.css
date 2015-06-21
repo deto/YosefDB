@@ -86,3 +86,24 @@ body{
     display: inline-block;
     padding: 8px;
 }
+
+.uploadContainer{
+    width: 700px;
+    margin: auto;
+}
+
+td.info-control:after{
+   font-family: "Glyphicons Halflings";
+    content: "\e086";
+    font-size: 1.5em;
+    color: darkcyan;
+    cursor: pointer;
+}
+
+td.delete-control:after{
+    font-family: "Glyphicons Halflings";
+    content: "\e014";
+    font-size: 1.5em;
+    color: crimson;
+    cursor: pointer;
+}
