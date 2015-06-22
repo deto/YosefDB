@@ -37,8 +37,19 @@ body{
     margin-bottom: 10px;
 }
 
+#menu_bar span
+{
+    display: inline-block;
+}
+
+#menu_bar span:hover
+{
+   background-color: #7b9dab;
+}
+
 #menu_bar a
 {
+    display: block;
     padding: 0px 20px;
     text-decoration: none;
     font-size: 1.5em;
@@ -46,7 +57,7 @@ body{
     color: #303030;
 }
 
-#menu_bar a:hover
+#menu_bar a:hover, #menu_bar span:hover
 {
     text-decoration: none;
     color: #303030;
@@ -106,4 +117,10 @@ td.delete-control:after{
     font-size: 1.5em;
     color: crimson;
     cursor: pointer;
+}
+
+
+/*Used for non-fullscreen width text inputs*/
+.smallInput{
+    width: 240px;
 }

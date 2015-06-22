@@ -1,11 +1,11 @@
 {% extends "SampleLibrary/base.html" %}
 {% block basecontent %}
     <div id="menu_bar">
-        <a href="Browse">Browse Samples</a>
-        <a href="Upload">Upload Samples</a>
-        <a href="ManageUploads">Manage Uploads</a>
-        <a href="Settings">Account Settings</a>
-        <a href="Logout">Log Out</a>
+            <span><a href="Browse">Browse Samples</a></span>
+            <span><a href="Upload">Upload Samples</a></span>
+            <span><a href="ManageUploads">Manage Uploads</a></span>
+            <span style="float: right"><a href="Logout">Log Out</a></span>
+            <span style="float: right"><a href="Settings">Account Settings</a></span>
     </div>
     <div style="max-width: 1200px; margin: auto; margin-top: 30px; padding: 0 30px;">
     {% block content %}

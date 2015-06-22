@@ -4,8 +4,10 @@
 
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <div style="height: 30px"></div>
     {{ file_form }}
     <br>
-    <input type="submit" value="Submit File">
+    <div style="height: 30px"></div>
+    <input type="submit" value="Submit File" class="btn btn-primary">
 </form>
 {% endblock %}
