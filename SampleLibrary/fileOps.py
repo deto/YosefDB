@@ -36,10 +36,6 @@ def parseDate(in_string):
 
 
 def handle_uploaded_file(uploadedBy, file):
-    #with open('test.txt', 'wb+') as fout:
-    #    for chunk in file.chunks():
-    #        fout.write(chunk);
-
     wb = openpyxl.load_workbook(file);
     ws = wb.active;
 

@@ -54,6 +54,16 @@
                 var uploadUUID = row.data().pk;
                 window.location = "{% url 'viewUpload' %}" + '?id=' + uploadUUID;
             });
+
+            $('#uploads_table tbody').on('click', 'td.delete-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row( tr );
+                var uploadUUID = row.data().pk;
+                $.post("{% url 'Delete_Upload_Ajax' %}", {"uuid": uploadUUID},
+                        function(data){
+                            table.ajax.reload(null, false);
+                        });
+            });
         } );
     </script>
 {% endblock %}
