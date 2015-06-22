@@ -1,10 +1,11 @@
 import uuid;
 from django.db import models
+from django.contrib.auth.models import User;
 
 # Create your models here.
 
 class Upload(models.Model):
-    UploadedBy = models.CharField(max_length=100);
+    UploadedBy = models.ForeignKey(User, null=True, on_delete=models.SET_NULL);
     UploadDate = models.DateTimeField(auto_now_add=True);
     UploadId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False);
 
@@ -43,7 +44,7 @@ class Sample(models.Model):
         return self.ExperimentName + ": " + str(self.IdCode);
 
 class UnvalidatedUpload(models.Model):
-    UploadedBy = models.CharField(max_length=100);
+    UploadedBy = models.ForeignKey(User, null=True, on_delete=models.SET_NULL);
     UploadDate = models.DateTimeField(auto_now_add=True);
     UploadId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False);
 

@@ -19,6 +19,8 @@
         <tr>
             <th>Sample Id</th>
             <th>Upload Batch</th>
+            <th>Upload Date</th>
+            <th>Uploaded By</th>
             <th>Organism</th>
             <th>Tissue</th>
             <th>Experiment Name</th>
@@ -61,31 +63,33 @@
              "iDisplayLength": 25,
 
              "columns": [
-                 { "data": "pk" , "name": "pk", "visible": false},
-                 { "data": "fields.UploadBatch", "name": "UploadBatch" , "visible": false},
-                 { "data": "fields.Organism", "name": "Organism" },
-                 { "data": "fields.Tissue", "name": "Tissue" },
-                 { "data": "fields.ExperimentName", "name": "ExperimentName" },
-                 { "data": "fields.DataType", "name": "DataType" },
-                 { "data": "fields.GenomeVersion", "name": "GenomeVersion" },
-                 { "data": "fields.ExperimentDescription", "name": "ExperimentDescription" },
-                 { "data": "fields.isSingleCell", "name": "isSingleCell", "visible": false},
-                 { "data": "fields.isPublishedData", "name": "isPublishedData", "visible": false},
-                 { "data": "fields.Date", "name": "Date", "visible": false },
-                 { "data": "fields.Batch", "name": "Batch", "visible": false },
-                 { "data": "fields.SequencingTech", "name": "SequencingTech", "visible": false },
-                 { "data": "fields.RawFileLoc", "name": "RawFileLoc", "visible": false },
-                 { "data": "fields.SpecificRawFileLoc", "name": "SpecificRawFileLoc", "visible": false },
-                 { "data": "fields.LocalBackupLoc", "name": "LocalBackupLoc", "visible": false },
-                 { "data": "fields.RemoteBackupLoc", "name": "RemoteBackupLoc", "visible": false },
-                 { "data": "fields.ProcessedFileLoc", "name": "ProcessedFileLoc", "visible": false },
-                 { "data": "fields.ConditionCode", "name": "ConditionCode", "visible": false },
-                 { "data": "fields.TimeCode", "name": "TimeCode", "visible": false },
-                 { "data": "fields.BatchCode", "name": "BatchCode", "visible": false },
-                 { "data": "fields.IdCode", "name": "IdCode", "visible": false },
-                 { "data": "fields.ControlId", "name": "ControlId", "visible": false },
-                 { "data": "fields.PreprocessDate", "name": "PreprocessDate", "visible": false },
-                 { "data": "fields.Comments", "name": "Comments", "visible": false },
+                 { "data": "SampleId" , "name": "SampleId", "visible": false},
+                 { "data": "UploadBatch", "name": "UploadBatch" , "visible": false},
+                 { "data": "UploadDate", "name": "UploadDate" , "visible": false},
+                 { "data": "Uploader", "name": "Uploader" , "visible": false},
+                 { "data": "Organism", "name": "Organism" },
+                 { "data": "Tissue", "name": "Tissue" },
+                 { "data": "ExperimentName", "name": "ExperimentName" },
+                 { "data": "DataType", "name": "DataType" },
+                 { "data": "GenomeVersion", "name": "GenomeVersion" },
+                 { "data": "ExperimentDescription", "name": "ExperimentDescription" },
+                 { "data": "isSingleCell", "name": "isSingleCell", "visible": false},
+                 { "data": "isPublishedData", "name": "isPublishedData", "visible": false},
+                 { "data": "Date", "name": "Date", "visible": false },
+                 { "data": "Batch", "name": "Batch", "visible": false },
+                 { "data": "SequencingTech", "name": "SequencingTech", "visible": false },
+                 { "data": "RawFileLoc", "name": "RawFileLoc", "visible": false },
+                 { "data": "SpecificRawFileLoc", "name": "SpecificRawFileLoc", "visible": false },
+                 { "data": "LocalBackupLoc", "name": "LocalBackupLoc", "visible": false },
+                 { "data": "RemoteBackupLoc", "name": "RemoteBackupLoc", "visible": false },
+                 { "data": "ProcessedFileLoc", "name": "ProcessedFileLoc", "visible": false },
+                 { "data": "ConditionCode", "name": "ConditionCode", "visible": false },
+                 { "data": "TimeCode", "name": "TimeCode", "visible": false },
+                 { "data": "BatchCode", "name": "BatchCode", "visible": false },
+                 { "data": "IdCode", "name": "IdCode", "visible": false },
+                 { "data": "ControlId", "name": "ControlId", "visible": false },
+                 { "data": "PreprocessDate", "name": "PreprocessDate", "visible": false },
+                 { "data": "Comments", "name": "Comments", "visible": false },
                  ],
          } );
 

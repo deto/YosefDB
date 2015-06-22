@@ -3,6 +3,7 @@ from django.template.context_processors import csrf;
 from django.http import HttpResponse;
 from django.template import RequestContext, loader;
 from django.core import serializers;
+import CustomSerializers;
 from django.views.decorators.csrf import csrf_exempt;
 from django.contrib.auth import authenticate, login, logout;
 from django.contrib.auth.decorators import login_required;
@@ -20,7 +21,7 @@ def uploadSample(request):
     if(request.method == 'POST'):
         form = UploadFileForm(request.POST, request.FILES);
         if(form.is_valid()):
-            handle_uploaded_file(form.cleaned_data["uploadedBy"], request.FILES['file'])
+            handle_uploaded_file(request.user, request.FILES['file'])
     else:
         form = UploadFileForm();
 
@@ -67,9 +68,9 @@ def samples_asJson(request):
     #Filter by number and offset.
     start = int(params["start"]);
     length = int(params["length"]);
-    samples = Sample.objects.all();
+    samples = Sample.objects.select_related().all();
     paged_samples = samples[start:(start+length)];
-    json_samples = '"data": ' + serializers.serialize('json',paged_samples);
+    json_samples = '"data": ' + CustomSerializers.serialize_samples(paged_samples);
 
     other_DT_vals = dict({
         "draw": int(params["draw"]),
@@ -107,6 +108,15 @@ def uploads_asJson(request):
     json = "{" + ','.join(json_list) + "}";
 
     return HttpResponse(json, content_type='application/json');
+
+@csrf_exempt
+@login_required
+def delete_Upload(request):
+    uuid = request.POST["uuid"];
+    upload_to_delete = Upload.objects.get(UploadId = uuid);
+    upload_to_delete.delete(); #This should cascade-delete all samples in the upload
+    return HttpResponse(status=200);
+
 
 def logout_view(request):
     logout(request);
