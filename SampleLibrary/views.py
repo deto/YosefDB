@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required;
 from .fileOps import handle_uploaded_file, validate_upload;
 
 from .models import Sample, Upload, UnvalidatedUpload, UnvalidatedSample;
-from .forms import UploadFileForm;
+from .forms import UploadFileForm, AccountSettingsForm;
 # Create your views here.
 
 @login_required
@@ -29,6 +29,57 @@ def uploadSample(request):
     form = UploadFileForm();
     c.update({'file_form':form});
     return render_to_response('SampleLibrary/uploadSample.html',c );
+
+@login_required
+def accountSettings(request):
+    c = {};
+    c.update(csrf(request));
+    page_errors = [];
+    if(request.method == 'POST'):
+        form = AccountSettingsForm(request.POST);
+        if(form.is_valid()):
+            firstname = form.cleaned_data['firstname'];
+            lastname = form.cleaned_data['lastname'];
+            email = form.cleaned_data['email'];
+
+            old_pw = form.cleaned_data['currentpassword'];
+            new_pw = form.cleaned_data['newpassword'];
+            new_pw_rp = form.cleaned_data['newpassword_repeat'];
+            change_password = False;
+            if(old_pw != "" or new_pw != "" or new_pw_rp != ""):
+                change_password = True;
+                if(not request.user.check_password(old_pw)):
+                    page_errors.append("Current Password is not correct.");
+
+                if(new_pw != new_pw_rp):
+                    page_errors.append("New Passwords do not match.")
+
+                if(new_pw != "" and old_pw == ""):
+                    page_errors.append("Current Password required to change password");
+
+            if(len(page_errors) > 0):
+                c.update({"page_errors": page_errors});
+            else:
+                user = request.user;
+                user.first_name = firstname;
+                user.last_name = lastname;
+                user.email = email;
+                if(change_password):
+                    user.set_password(new_pw);
+
+                user.save();
+                c.update({"save_success": True})
+    else:
+        form = AccountSettingsForm(initial={
+            "firstname": request.user.first_name,
+            "lastname": request.user.last_name,
+            "email": request.user.email,
+        });
+
+    c.update({'username': request.user.username});
+    c.update({'account_settings_form': form});
+
+    return render_to_response("SampleLibrary/accountSettings.html", c);
 
 
 @login_required

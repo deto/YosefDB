@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^Upload$', views.uploadSample, name='uploadSample'),
     url(r'^Browse$', views.viewSample, name='viewSample'),
     url(r'^ManageUploads$', views.manageUploads, name='manageUploads'),
+    url(r'^Settings$', views.accountSettings, name="accountSettings"),
     url(r'^ViewUpload$', views.viewUpload, name='viewUpload'),
     url(r'^ValidateUpload$', views.validateUpload, name='validateUpload'),
     url(r'^samples_asJson$', views.samples_asJson, name='DT_Ajax'),

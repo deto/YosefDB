@@ -1,0 +1,32 @@
+{% extends "SampleLibrary/userBase.html" %}
+{% load bootstrapTemplates %}
+{% block content %}
+    <h1>Account Settings - {{ username }}</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in account_settings_form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field|addcss:"form-control smallInput" }}
+            </div>
+        {% endfor %}
+        <br>
+        <input type="submit" value="Save Changes" class="btn btn-primary" style="margin-bottom: 15px">
+        {% for error in page_errors %}
+            <br>
+            <div class="alert alert-danger alert-inline" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                {{ error }}
+            </div>
+        {% endfor %}
+        {% if save_success %}
+            <br>
+            <div class="alert alert-success alert-inline" role="alert">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                <span class="sr-only">Success:</span>
+                Changes successfully saved!
+            </div>
+        {% endif %}
+    </form>
+{% endblock %}
