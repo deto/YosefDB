@@ -8,9 +8,9 @@ from django.views.decorators.csrf import csrf_exempt;
 from django.contrib.auth import authenticate, login, logout;
 from django.contrib.auth.decorators import login_required;
 
-from .fileOps import handle_uploaded_file;
+from .fileOps import handle_uploaded_file, validate_upload;
 
-from .models import Sample, Upload;
+from .models import Sample, Upload, UnvalidatedUpload, UnvalidatedSample;
 from .forms import UploadFileForm;
 # Create your views here.
 
@@ -21,12 +21,13 @@ def uploadSample(request):
     if(request.method == 'POST'):
         form = UploadFileForm(request.POST, request.FILES);
         if(form.is_valid()):
-            handle_uploaded_file(request.user, request.FILES['file'])
-    else:
-        form = UploadFileForm();
+            this_upload = handle_uploaded_file(request.user, request.FILES['file'])
+            response = redirect("validateUpload");
+            response['Location'] += '?id=' + str(this_upload.UploadId);
+            return response;
 
+    form = UploadFileForm();
     c.update({'file_form':form});
-
     return render_to_response('SampleLibrary/uploadSample.html',c );
 
 
@@ -45,6 +46,30 @@ def viewUpload(request):
     return render_to_response('SampleLibrary/viewSingleUpload.html',c);
 
 @login_required
+def validateUpload(request):
+    if(request.method == "POST"):
+        if("save" in request.POST):
+            uuid = request.POST["uploadUUID"];
+            unvalidatedUpload = UnvalidatedUpload.objects.get(UploadId = uuid);
+            validate_upload(unvalidatedUpload);
+            return redirect("viewSample");
+        else:
+            return redirect("uploadSample");
+
+
+    c = {}
+    c.update(csrf(request));
+    uuid = request.GET["id"];
+    unvalidatedUpload = UnvalidatedUpload.objects.get(UploadId = uuid);
+    unrecognized_headers = unvalidatedUpload.UnrecognizedCols.split("\n");
+    if(len(unrecognized_headers) == 1 and unrecognized_headers[0] == ""):
+        unrecognized_headers = [];
+    c.update({"unrecognized_headers": unrecognized_headers});
+    c.update({"has_unrecognized": len(unrecognized_headers) > 0});
+    c.update({"uuid": uuid});
+    return render_to_response('SampleLibrary/validateUpload.html',c);
+
+@login_required
 def manageUploads(request):
     c = {}
     c.update(csrf(request));
@@ -58,6 +83,16 @@ def singleUpload_Samples_asJson(request):
     json_samples = '"data": ' + serializers.serialize('json',samples);
     json = "{" + json_samples + "}";
     return HttpResponse(json, content_type='application/json');
+
+@csrf_exempt
+@login_required
+def unvalidatedUpload_samples_asJson(request):
+    uuid = request.GET["id"];
+    samples = UnvalidatedSample.objects.filter(UploadBatch = uuid);
+    json_samples = '"data": ' + serializers.serialize('json',samples);
+    json = "{" + json_samples + "}";
+    return HttpResponse(json, content_type='application/json');
+
 
 @csrf_exempt
 @login_required

@@ -1,6 +1,6 @@
 import openpyxl;
 import datetime;
-from .models import Sample, Upload;
+from .models import Sample, Upload, UnvalidatedSample, UnvalidatedUpload;
 
 
 def parseBool(in_string):
@@ -39,7 +39,7 @@ def handle_uploaded_file(uploadedBy, file):
     wb = openpyxl.load_workbook(file);
     ws = wb.active;
 
-    thisUpload = Upload();
+    thisUpload = UnvalidatedUpload();
     thisUpload.UploadedBy = uploadedBy;
 
     #Read in the column headers.  Create a mapping to Sample parameters
@@ -103,7 +103,7 @@ def handle_uploaded_file(uploadedBy, file):
     samples_to_add = list();
     for i,row in enumerate(ws.rows):
         if(i==0): continue;
-        newSample = Sample();
+        newSample = UnvalidatedSample();
         if(col_map.has_key("organism")):
             cellVal = row[col_map["organism"]].value;
             if(cellVal is not None): newSample.Organism = cellVal;
@@ -178,8 +178,32 @@ def handle_uploaded_file(uploadedBy, file):
         samples_to_add.append(newSample);
 
 
+    thisUpload.UnrecognizedCols = '\n'.join(unrecognized_columns);
     thisUpload.save();
-    Sample.objects.bulk_create(samples_to_add);
+    UnvalidatedSample.objects.bulk_create(samples_to_add);
+
+    return thisUpload;
+
+def validate_upload(unvalidatedUpload):
+    """
+    Copies the unvalidated upload and all of its related samples into the
+    validated Samples and Uploads tables
+
+    :param unvalidatedUpload: The upload that is to be made valid
+    :return:
+    """
+
+    newUpload = unvalidatedUpload.create_valid_upload();
+
+    unvalid_samples = unvalidatedUpload.unvalidatedsample_set.all();
+    valid_samples = list();
+    for unvalid_sample in unvalid_samples:
+        new_sample = unvalid_sample.create_valid_sample();
+        new_sample.UploadBatch = newUpload;
+        valid_samples.append(new_sample);
+
+    newUpload.save();
+    Sample.objects.bulk_create(valid_samples);
 
 
 
