@@ -18,4 +18,68 @@
         {% endif %}
         <div id="homeImages"></div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    var NROWS = 40;
+    var NCOLS = 50;
+    var width = 50;
+    var height = 50;
+    var border = 2;
+
+    var bgdata = [];
+
+    var colorScale = d3.scale.linear()
+            .domain([0,.5,1])
+            .range(["steelblue", "lightgreen", "lightcoral"]);
+
+    $(window).load(function(){
+        //Generate background data
+
+        for(var i = 0; i < NROWS; i++)
+        {
+            for(var j = 0; j < NCOLS; j++)
+            {
+                bgdata.push({"x":i, "y":j, "val":Math.random()});
+            }
+        }
+
+        drawBG();
+        //setInterval(modifyBG, 5000);
+
+    });
+
+    function drawBG()
+    {
+        var bgdivs = d3.select('body').selectAll('.bgdiv')
+                .data(bgdata);
+
+        bgdivs.enter()
+            .append("div")
+            .classed("bgdiv", true)
+            .style("width", (width) + "px")
+            .style("height", (height) + "px")
+            .style("top", function(d){return (d.y*height) + "px";})
+            .style("left", function(d){return (d.x*width) + "px";})
+            .style("background-color", "white")
+            .style("border", border + "px solid white");
+
+        bgdivs
+            .transition()
+            .duration(3000)
+            .style("background-color", function(d){return colorScale(d.val);});
+
+    }
+
+    function modifyBG()
+    {
+        N_MODIFY = 1000;
+        for(var i = 0; i < N_MODIFY; i++)
+        {
+            ii = Math.floor(Math.random()*bgdata.length);
+            $('.bgdiv').eq(ii).css("background-color", colorScale(Math.random()));
+        }
+    }
+
+
+    </script>
 {% endblock %}
