@@ -46,7 +46,7 @@ def handle_uploaded_file(uploadedBy, file):
     col_map = dict();
     unrecognized_columns = list();
     for i in xrange(ws.get_highest_column()):
-        headerText = ws.cell(row=0, column=i).value;
+        headerText = ws.cell(row=1, column=i+1).value;
         headerText = headerText.lower().replace(" ","");
         headerText = headerText.replace("_","");
         if(headerText == "organism"):
@@ -96,13 +96,13 @@ def handle_uploaded_file(uploadedBy, file):
         elif(headerText == "comments"):
             col_map.update({"comments": i});
         else:
-            unrecognized_columns.append(ws.cell(row=0, column=i).value);
+            unrecognized_columns.append(headerText);
 
     #Iterate through all the other rows and create Samples for each row
     #An empty cell has a .value of None
     samples_to_add = list();
     for i,row in enumerate(ws.rows):
-        if(i==0): continue;
+        if(i==0): continue; #Skip header row
         newSample = UnvalidatedSample();
         if(col_map.has_key("organism")):
             cellVal = row[col_map["organism"]].value;
