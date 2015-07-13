@@ -5,22 +5,46 @@ html{
 body{
     min-height: 100%;
 }
+
+#filtering_show{
+    float: left;
+    margin-bottom: 20px;
+}
+
+#search_show{
+    float: right;
+    margin-bottom: 20px;
+}
+
 #filtering_options label {
     margin-left: 20px;
 }
 
-#filtering_options {
+#search_options label {
+    margin-right: 20px;
+}
+
+#search_options{
+    text-align: right;
+}
+
+#filtering_options{
+    text-align: left;
+}
+
+#filtering_options , #search_options{
+    display: inline-block;
     background: white;
     border: solid 1px black;
     border-radius: 5px;
     left: 50%;
     margin: auto;
     margin-top: 50px;
-    width: 400px;
     padding: 20px 30px;
 }
 
-#filtering_overlay {
+#filtering_overlay , #search_overlay{
+    text-align: center;
     position: fixed;
     left: 0;
     top: 0;
