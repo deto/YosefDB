@@ -58,3 +58,6 @@ target/
 
 # Pycharm files
 .idea/
+
+# Collected static files
+static-deploy/

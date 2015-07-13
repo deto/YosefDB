@@ -1,7 +1,10 @@
 {% extends "SampleLibrary/userBase.html" %}
 {% block content %}
+{% load staticfiles %}
 <h1>Upload a New Sample Spreadsheet</h1>
-
+Submit an Excel (.xlsx) spreadsheet with Sample metadata.
+<br>
+For an example of the required format, download this <a href="{% static 'SampleLibrary/UploadTemplate.xlsx' %}">template file</a>.
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div style="height: 30px"></div>
