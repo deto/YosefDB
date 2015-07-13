@@ -4,13 +4,28 @@
     {% csrf_token %}
     <div id="filtering_show">
         <button type="button" class="btn btn-default btn-lg" aria-label="Filter on">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span style="margin-left: 10px;">Filter Columns</span>
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span style="margin-left: 10px;">Select Columns</span>
+        </button>
+    </div>
+    <div id="search_show">
+        <button type="button" class="btn btn-default btn-lg" aria-label="Search on">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span><span style="margin-left: 10px;">Search Columns</span>
         </button>
     </div>
     <div id="filtering_overlay" style="display: none">
         <div id="filtering_options">
             <button type="button" class="btn btn-primary btn-lg" aria-label="Close Filter" style="margin-top: 15px;">
                 Back
+            </button>
+        </div>
+    </div>
+    <div id="search_overlay" style="display: none">
+        <div id="search_options">
+            <button type="button" class="btn btn-primary btn-lg backbutton" aria-label="Back" style="margin-top: 15px; float: left;">
+                Search
+            </button>
+            <button type="button" class="btn btn-default btn-lg clearbutton" aria-label="Clear" style="margin-top: 15px;">
+                Clear Terms
             </button>
         </div>
     </div>
@@ -64,8 +79,8 @@
 
              "columns": [
                  { "data": "SampleId" , "name": "SampleId", "visible": false},
-                 { "data": "UploadBatch", "name": "UploadBatch" , "visible": false},
-                 { "data": "UploadDate", "name": "UploadDate" , "visible": false},
+                 { "data": "UploadBatch", "name": "UploadBatch_id" , "visible": false},
+                 { "data": "UploadDate", "name": "UploadBatch__UploadDate" , "visible": false},
                  { "data": "Uploader", "name": "Uploader" , "visible": false},
                  { "data": "Organism", "name": "Organism" },
                  { "data": "Tissue", "name": "Tissue" },
@@ -93,6 +108,7 @@
                  ],
          } );
 
+         //Build the filter overlay
         // for each column in header add a togglevis button in the div
         table.columns().every( function () {
             var i = this.index();
@@ -123,6 +139,29 @@
 
         });
 
+         //Build the search overlay
+         // for each column in header add a text input
+         table.columns().every( function () {
+             var i = this.index();
+             var name = this.header().innerHTML;
+
+             var textinput = document.createElement( "input" );
+             textinput.type="text";
+             textinput.name=name;
+             textinput.id="search_col"+ i.toString();
+             $(textinput).data("col", i);
+
+             var label = document.createElement("label");
+             label.htmlFor = textinput.id;
+             label.appendChild(document.createTextNode(name+":"));
+
+             var div = document.createElement("div");
+             div.appendChild(label);
+             div.appendChild(textinput);
+             $("#search_options").prepend($(div));
+
+         });
+
          $('#filtering_show').children('button').click(function () {
              $('#filtering_overlay').toggle();
          });
@@ -136,6 +175,32 @@
          });
 
          $('#filtering_options').click(function(event){
+             event.stopPropagation(); //Needed to prevent bubbling loop
+         });
+
+         $('#search_show').children('button').click(function () {
+             $('#search_overlay').toggle();
+         });
+
+         $('#search_options').children('button').filter('.backbutton').click(function () {
+             $('#search_options').find('input[type=text]').each(function(i){
+                 var col_i = $(this).data('col');
+                 var search_text = $(this).val();
+                 table.column(col_i).search(search_text);
+             });
+             $('#search_overlay').hide();
+             table.draw();
+         });
+
+         $('#search_options').children('button').filter('.clearbutton').click(function () {
+             $('#search_options').find('input').val('');
+         });
+
+         $('#search_overlay').click(function(){
+             $('#search_options').children('button').filter('.backbutton').click();
+         });
+
+         $('#search_options').click(function(event){
              event.stopPropagation(); //Needed to prevent bubbling loop
          });
      } );

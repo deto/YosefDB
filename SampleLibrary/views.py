@@ -12,6 +12,7 @@ from .fileOps import handle_uploaded_file, validate_upload;
 
 from .models import Sample, Upload, UnvalidatedUpload, UnvalidatedSample;
 from .forms import UploadFileForm, AccountSettingsForm;
+import re;
 # Create your views here.
 
 @login_required
@@ -148,13 +149,45 @@ def unvalidatedUpload_samples_asJson(request):
 @csrf_exempt
 @login_required
 def samples_asJson(request):
-    #import pdb; pdb.set_trace();
     params = request.POST;
+
+    #Determine sort order
+    sort_col = params['order[0][column]'];
+    sort_dir = params['order[0][dir]'];
+
+    sort_name = params['columns[' + sort_col + '][name]'];
+
+    if(sort_name == "Uploader"):
+        sort_name = "UploadBatch__UploadedBy__first_name";
+
+    if(sort_dir == "desc"):
+        sort_name = '-' + sort_name;  #negative in front means descending
+
+    #Extract any search terms
+    search_patterns = list();
+    for key in params.keys():
+        if(key.find("[search][value]") > -1 and key.startswith('columns[') and params[key] != ''):
+            col_prefix = re.search('columns\[\d+\]', key).group();
+            name = params[col_prefix + '[name]'];
+            val = params[col_prefix + '[search][value]'];
+            vals = [x.strip() for x in val.split(';')];
+            for val in vals:
+                search_patterns.append({'name':name, 'value':val});
+
 
     #Filter by number and offset.
     start = int(params["start"]);
     length = int(params["length"]);
     samples = Sample.objects.select_related().all();
+
+    for search_pattern in search_patterns:
+        if(search_pattern['name'] == "Uploader"):
+            search_pattern['name'] = "UploadBatch__UploadedBy__first_name";
+
+        #Seems to work on ints too?
+        samples = samples.filter(**{search_pattern['name'] +'__icontains': search_pattern['value']});
+
+    samples = samples.order_by(sort_name);
     paged_samples = samples[start:(start+length)];
     json_samples = '"data": ' + CustomSerializers.serialize_samples(paged_samples);
 
@@ -177,21 +210,10 @@ def uploads_asJson(request):
     params = request.POST;
 
     #Filter by number and offset.
-    start = int(params["start"]);
-    length = int(params["length"]);
     uploads = Upload.objects.all();
-    paged_uploads = uploads[start:(start+length)];
-    json_uploads = '"data": ' + serializers.serialize('json',paged_uploads);
+    json_uploads = '"data": ' + CustomSerializers.serialize_uploads(uploads);
 
-    other_DT_vals = dict({
-        "draw": int(params["draw"]),
-        "recordsTotal": Upload.objects.count(),
-        "recordsFiltered": len(uploads),
-    });
-
-    json_list = ['"'+key+'": ' + str(val) for key,val in other_DT_vals.items()];
-    json_list.append(json_uploads);
-    json = "{" + ','.join(json_list) + "}";
+    json = "{" + json_uploads + "}";
 
     return HttpResponse(json, content_type='application/json');
 
