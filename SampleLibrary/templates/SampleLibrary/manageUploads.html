@@ -21,8 +21,6 @@
     <script type="text/javascript" language="javascript" class="init">
         $(document).ready(function() {
             var table = $('#uploads_table').DataTable( {
-                "processing": true,
-                "serverSide": true,
                 "ajax": {
                     "processing": true,
                     "url": "{% url 'Uploads_Ajax' %}",
@@ -32,9 +30,9 @@
                 "iDisplayLength": 25,
 
                 "columns": [
-                    { "data": "fields.UploadedBy", "name": "UploadedBy"},
-                    { "data": "fields.UploadDate", "name": "UploadDate" },
-                    { "data": "pk" , "name": "pk"},
+                    { "data": "UploadedBy", "name": "UploadedBy"},
+                    { "data": "UploadDate", "name": "UploadDate" },
+                    { "data": "UploadId" , "name": "UploadId"},
                     { "className": 'info-control',
                         "orderable": false,
                         "data": null,
@@ -51,7 +49,7 @@
             $('#uploads_table tbody').on('click', 'td.info-control', function () {
                 var tr = $(this).closest('tr');
                 var row = table.row( tr );
-                var uploadUUID = row.data().pk;
+                var uploadUUID = row.data().UploadId;
                 window.location = "{% url 'viewUpload' %}" + '?id=' + uploadUUID;
             });
 
@@ -60,7 +58,7 @@
                 if(result){
                     var tr = $(this).closest('tr');
                     var row = table.row( tr );
-                    var uploadUUID = row.data().pk;
+                    var uploadUUID = row.data().UploadId;
                     $.post("{% url 'Delete_Upload_Ajax' %}", {"uuid": uploadUUID},
                             function(data){
                                 table.ajax.reload(null, false);

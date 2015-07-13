@@ -210,21 +210,10 @@ def uploads_asJson(request):
     params = request.POST;
 
     #Filter by number and offset.
-    start = int(params["start"]);
-    length = int(params["length"]);
     uploads = Upload.objects.all();
-    paged_uploads = uploads[start:(start+length)];
-    json_uploads = '"data": ' + serializers.serialize('json',paged_uploads);
+    json_uploads = '"data": ' + CustomSerializers.serialize_uploads(uploads);
 
-    other_DT_vals = dict({
-        "draw": int(params["draw"]),
-        "recordsTotal": Upload.objects.count(),
-        "recordsFiltered": len(uploads),
-    });
-
-    json_list = ['"'+key+'": ' + str(val) for key,val in other_DT_vals.items()];
-    json_list.append(json_uploads);
-    json = "{" + ','.join(json_list) + "}";
+    json = "{" + json_uploads + "}";
 
     return HttpResponse(json, content_type='application/json');
 

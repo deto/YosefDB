@@ -32,6 +32,13 @@ def sample_to_dict(sample):
     temp["Comments"] = sample.Comments;
     return temp;
 
+def upload_to_dict(upload):
+    temp = dict();
+    temp["UploadId"] = str(upload.UploadId);
+    temp["UploadDate"] = str(upload.UploadDate);
+    temp["UploadedBy"] = upload.UploadedBy.first_name + " " + upload.UploadedBy.last_name;
+    return temp;
+
 
 def serialize_sample(sample):
     sdict = sample_to_dict(sample);
@@ -40,4 +47,12 @@ def serialize_sample(sample):
 def serialize_samples(sample_list):
     all_samples = [sample_to_dict(sample) for sample in sample_list];
     return json.dumps(all_samples);
+
+def serialize_upload(upload):
+    udict = upload_to_dict(upload);
+    return json.dumps(udict);
+
+def serialize_uploads(upload_list):
+    all_uploads = [upload_to_dict(upload) for upload in upload_list];
+    return json.dumps(all_uploads);
 
